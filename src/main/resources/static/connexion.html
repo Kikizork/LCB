@@ -43,19 +43,20 @@
     <div class="container d-flex align-items-center main_connexion my-5" >
             <div class="row p-2 col-md-7 col-lg-6 bg-light" id="connexion_form" >
                 <div class="statique col-12 my-2 "> 
-                    <a class="my-2 py-3 text-center" href="creer_compte.html" id="have_account">J'ai déjà un compte</a>
+                    <a class="my-2 py-3 text-center" onclick="haveAccountToggle()"id="have_account">J'ai déjà un compte</a>
                 </div>
                 <div id="connexion" class="row mb-4 justify-content-center">
                     <h1 class="titreConnexion text-center">Connexion</h1>
                     <input class="email col-10 my-2" id="idUtilisateur" type="email" placeholder="Adresse mail">
                     <input class="pswd col-10 my-2" id="motDePasse" type="password" placeholder="Mot de passe">
-                    <button class="btn-success col-10 border rounded my-3" name="connecter">Valider</button>
+                    <button class="btn-success col-10 border rounded my-3" onclick="connection()" name="connecter">Valider</button>
+                    <p id="accountsInfos"></p>
                 </div>
             </div>
         
             <div  class="row p-2 col-md-7 col-lg-6 mt-5 bg-light" id="cree_compte_form">
                 <div class="statique col-12 my-2" id="connexion_statique"> 
-                    <a class="my-2 py-3 text-center" href="creer_compte.html" id="create_account">Créer un compte</a>
+                    <a class="my-2 py-3 text-center" onclick="createAccountToggle()" id="create_account">Créer un compte</a>
                 </div>
                 <div id="cree_compte" class="row mb-4 justify-content-center">
                     <h1 class="titreConnexion text-center">Créer un compte</h1>
@@ -69,7 +70,8 @@
                         <input type="checkbox" class="custom-control-input " id="customCheck1">
                         <label class="custom-control-label" for="customCheck1">remember my password</label>
                     </div>
-                    <button class="btn-success col-10 offset-1 border rounded my-3 creerUnCompte" name="creerUnCompte">Valider</button>
+                    <button class="btn-success col-10 offset-1 border rounded my-3 creerUnCompte" onclick="createAccount()"name="creerUnCompte">Valider</button>
+                    <p id="accountInfos"></p>
                 </div>
             </div>
         </div>
@@ -112,73 +114,6 @@
             });
         
             
-            $("#create_account").click(function( event ) {
-                event.preventDefault();
-                $("#connexion_form> .statique").toggle();
-                $("#connexion").slideUp();
-                $("#cree_compte").slideDown();
-                $("#cree_compte_form> .statique").toggle();
-            });
-    
-            $("#have_account").click(function( event ) {
-                event.preventDefault();
-                $("#cree_compte_form> .statique").toggle();
-                $("#cree_compte").slideUp();
-                $("#connexion").slideDown();
-                $("#connexion_form> .statique").toggle();
-            }); 
-
-
-            
-            
-            
-
-            $("button[name='connecter']").on("click",function(){
-
-                var idUtilisateur = $("#idUtilisateur").val();
-                var motDePasse = $("#motDePasse").val();
-                console.log(idUtilisateur);
-                $.ajax({ 
-                    url: "http://localhost:8080/utilisateur/connexion", 
-                    headers: { "mail" : idUtilisateur , "password" : motDePasse},
-                    type: 'GET',
-                    dataType:"json",
-                    timeout: 15000
-                }).done(
-                    function(data) { 
-                        
-                        tokenMail = idUtilisateur;
-                        tokenPassword = motDePasse;
-                        saveConnexion();
-                        document.location.href="mes_recettes.html";
-                    }
-                ).fail(function(jqXHR, textStatus, errorThrown){
-                    alert("Connexion impossible. Cause probable : erreur sur le pseudonyme ou sur le mot de passe");
-                });
-            })
-
-            $("button[name='creerUnCompte']").on("click",function(){
-                var pseudoNew = $("#pseudoNew").val();
-                var prenomNew = $("#prenomNew").val();
-                var nomNew = $("#nomNew").val();
-                var mailNew = $("#mailNew").val();
-                var passwordNew = $("#passwordNew").val();
-                
-                $.ajax({
-                    url: "http://localhost:8080/utilisateur",
-                    type: 'POST',
-                    headers: { "pseudo" : pseudoNew , "mail" : mailNew , "motDePasse" : passwordNew , "prenom" : prenomNew , "nom" : nomNew }                    
-                }).done(function(data){                                        
-                    alert("Votre compte a bien été créé !")
-                }).fail(function(jqXHR, textStatus, errorThrown){
-                    alert("Nous n'avons pas pu créer votre compte. Cause probable : le pseudonyme est déjà utilisé");
-                });
-            })
-
-            function saveConnexion(){
-            	window.sessionStorage.setItem('Mail', tokenMail);
-            	window.sessionStorage.setItem('Password', tokenPassword);
-            }
         </script>
   </body>
 </html>

@@ -18,25 +18,6 @@ function openNav() {
 	  document.getElementById("mySidenav").style.width = "0";
 	}
 
-/*  	
-// Affiche onclick le menu deroulant connexion/favoris/etc
-function displayMenu(){
-    $("#menu_navigation").toggle();
-    $("#bouton_connexion").show();
-    // sert a aller récuperer en cache l'info de connexion //
-    let user = sessionStorage.getItem('Mail')
-    if ( user == null){
-        $("#bouton_deconnexion").hide();               
-    }
-    else {
-        $("#bouton_connexion").hide();
-        if ($("#pseudo").length == 0){
-            getPseudo();
-        }
-    }
-};
-*/
-
 // fonction vérifiant la connexion en cas de click sur le menu favori et recette. 
 //Si l'user n'est pas connecté, une redirection vers la page de connexion se produit //
 function update(url){
@@ -161,5 +142,69 @@ function onloadUserFavoris() {
                    $(".LinkRecette"+i).attr("href",data[i].urlRecette);
                   }
             });
-          }
+}
 
+function createAccountToggle() {
+    $("#connexion_form> .statique").toggle();
+    $("#connexion").slideUp();
+    $("#cree_compte").slideDown();
+    $("#cree_compte_form> .statique").toggle();
+}
+
+function haveAccountToggle() {
+    
+    $("#cree_compte_form> .statique").toggle();
+    $("#cree_compte").slideUp();
+    $("#connexion").slideDown();
+    $("#connexion_form> .statique").toggle();
+}
+
+
+/// fonction pour page connexion.html //
+
+function connection(){
+
+    var idUtilisateur = $("#idUtilisateur").val();
+    var motDePasse = $("#motDePasse").val();
+    console.log(idUtilisateur);
+    $.ajax({ 
+        url: "http://localhost:8080/utilisateur/connexion", 
+        headers: { "mail" : idUtilisateur , "password" : motDePasse},
+        type: 'GET',
+        dataType:"json",
+        timeout: 15000
+    }).done(
+        function(data) { 
+            
+            tokenMail = idUtilisateur;
+            tokenPassword = motDePasse;
+            saveConnexion();
+            document.location.href="mes_recettes.html";
+        }
+    ).fail(function(jqXHR, textStatus, errorThrown){
+        $("#accountsInfos").text("Connexion impossible. Cause probable : erreur sur le pseudonyme ou sur le mot de passe");
+    });
+}
+
+function createAccount(){
+    var pseudoNew = $("#pseudoNew").val();
+    var prenomNew = $("#prenomNew").val();
+    var nomNew = $("#nomNew").val();
+    var mailNew = $("#mailNew").val();
+    var passwordNew = $("#passwordNew").val();
+    
+    $.ajax({
+        url: "http://localhost:8080/utilisateur",
+        type: 'POST',
+        headers: { "pseudo" : pseudoNew , "mail" : mailNew , "motDePasse" : passwordNew , "prenom" : prenomNew , "nom" : nomNew }                    
+    }).done(function(data){                                        
+        $("#accountInfos").text("Votre compte à bien été crée !");
+    }).fail(function(jqXHR, textStatus, errorThrown){
+    	$("#accountInfos").text("Nous n'avons pas pu créer votre compte. Cause probable :le pseudonyme est déjà utilisé");
+    });
+}
+
+function saveConnexion(){
+	window.sessionStorage.setItem('Mail', tokenMail);
+	window.sessionStorage.setItem('Password', tokenPassword);
+}

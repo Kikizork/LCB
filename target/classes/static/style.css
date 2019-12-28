@@ -297,6 +297,14 @@ input {
     border: 1px solid rgb(199, 199, 199);
     border-radius: 3%;
 }
+#accountsInfos{
+	margin: 5px;
+	text-align: center;
+}
+#accountInfos{
+	margin: 5px;
+	text-align: center;
+}
 #cree_compte_form {
     border: 1px solid rgb(199, 199, 199);
     border-radius: 3%;
